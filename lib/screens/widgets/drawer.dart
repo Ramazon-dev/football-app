@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:softcity/constants/constants.dart';
 import 'package:softcity/constants/sizeconfig.dart';
+import 'package:softcity/get_storage/get_storage.dart';
 import 'package:softcity/providers/provider_bottom_nav_bar.dart';
-import 'package:softcity/screens/cards_page.dart';
-import 'package:softcity/screens/contacts_page.dart';
-import 'package:softcity/screens/home_body.dart';
-import 'package:softcity/screens/settings_page.dart';
-import 'package:softcity/screens/yangiliklar_page.dart';
-import 'package:softcity/widgets/diwider.dart';
+import 'package:softcity/screens/auth/sign_in_page.dart';
+import 'package:softcity/screens/main/cards/cards_page.dart';
+import 'package:softcity/screens/main/contacts/contacts_page.dart';
+import 'package:softcity/screens/main/home/home_body.dart';
+import 'package:softcity/screens/main/settings/settings_page.dart';
+import 'package:softcity/screens/main/news/yangiliklar_page.dart';
+import 'package:softcity/screens/widgets/diwider.dart';
 
 class DraverClass extends StatelessWidget {
   DraverClass({Key? key}) : super(key: key);
   List<Widget> listOfPages = [
-    HomeBody(),
+     HomeBody(),
     const YangiliklarPage(),
     const CardsPage(),
-    SettingPage(),
+    const SettingPage(),
   ];
   List<String> listOfText = [
     "Home",
@@ -25,10 +28,15 @@ class DraverClass extends StatelessWidget {
     "Settings",
     "About",
   ];
-
+  String name = GetStorage().read('name') ?? '';
+  String status = GetStorage().read('status') ?? '';
   late ProviderBottomNavBar _bottomNavBar;
+
   @override
   Widget build(BuildContext context) {
+    debugPrint(
+      'getstoragedan keladigan status $status va ism $name',
+    );
     _bottomNavBar = context.watch();
 
     return Drawer(
@@ -69,7 +77,7 @@ class DraverClass extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Mario Casas",
+                          name,
                           style: TextStyle(
                             color: drawerTextColor,
                             fontSize: getHeight(18),
@@ -86,7 +94,7 @@ class DraverClass extends StatelessWidget {
                                   BorderRadius.circular(getHeight(27)),
                               color: const Color(0xffFFDFED)),
                           child: Text(
-                            "Not active",
+                            status == '0' ? "Active" : "Not active",
                             style: TextStyle(
                               fontSize: getHeight(7),
                               color: const Color(0xffED2E7E),
@@ -136,6 +144,26 @@ class DraverClass extends StatelessWidget {
                 );
               },
               itemCount: listOfText.length,
+            ),
+          ),
+          SizedBox(height: getHeight(200)),
+          Padding(
+            padding: const EdgeInsets.all(30.0),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SignInPage(),
+                  ),
+                );
+                GetStorage().remove('token');
+                GetStorage().remove('status');
+                GetStorage().remove('username');
+                LocalSource.getInstance().removeProfile();
+              },
+              child: const Text("log out"),
             ),
           ),
         ],

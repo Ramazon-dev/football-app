@@ -1,13 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:softcity/constants/constants.dart';
 import 'package:softcity/constants/sizeconfig.dart';
+import 'package:softcity/get_storage/get_storage.dart';
 import 'package:softcity/providers/provider_swich_listtile.dart';
-import 'package:softcity/widgets/diwider.dart';
+import 'package:softcity/screens/auth/sign_in_page.dart';
+import 'package:softcity/screens/widgets/diwider.dart';
 
 class SettingPage extends StatelessWidget {
-  SettingPage({Key? key}) : super(key: key);
+  const SettingPage({Key? key}) : super(key: key);
 
   // late ProviderSwickListTile _providerSwickListTile;
   @override
@@ -111,6 +114,22 @@ class SettingPage extends StatelessWidget {
                 ),
               ),
             ),
+            // ElevatedButton(
+            //   style: ElevatedButton.styleFrom(fixedSize: const Size(50, 50)),
+            //   onPressed: () {
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(
+            //         builder: (context) => const SignInPage(),
+            //       ),
+            //     );
+            //     GetStorage().remove('token');
+            //     GetStorage().remove('status');
+            //     GetStorage().remove('username');
+            //     LocalSource.getInstance().removeProfile();
+            //   },
+            //   child: const Text("data"),
+            // ),
           ],
         ),
       ),

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:softcity/constants/sizeconfig.dart';
-import 'package:softcity/widgets/text_widget.dart';
+import 'package:softcity/screens/widgets/text_widget.dart';
 
 class AppBarClass extends StatelessWidget with PreferredSizeWidget {
   const AppBarClass({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    // DateTime expirationData = JwtDecoder.getExpirationDate('');
     return AppBar(
       // backgroundColor: Colors.white,
       iconTheme: const IconThemeData(color: Colors.black),
@@ -41,5 +43,5 @@ class AppBarClass extends StatelessWidget with PreferredSizeWidget {
 
   @override
   // TODO: implement preferredSize
-  Size get preferredSize => Size(double.infinity, 56);
+  Size get preferredSize => Size(double.infinity, getHeight(56));
 }

@@ -1,16 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:softcity/constants/constants.dart';
 import 'package:softcity/constants/sizeconfig.dart';
-import 'package:softcity/screens/home_page.dart';
-import 'package:softcity/widgets/elevated_button.dart';
+import 'package:softcity/get_storage/get_storage.dart';
+import 'package:softcity/models/customer.dart';
+import 'package:softcity/models/login.dart';
+import 'package:softcity/screens/main/home/home_page.dart';
+import 'package:softcity/screens/widgets/elevated_button.dart';
+import 'package:softcity/service/auth/sign_in/sign_in_service.dart';
 
-class SignInPage extends StatelessWidget {
-  SignInPage({Key? key}) : super(key: key);
+class SignInPage extends StatefulWidget {
+  const SignInPage({Key? key}) : super(key: key);
 
-  String name = "ramazon";
-  String password = "tojiboyev";
+  @override
+  State<SignInPage> createState() => _SignInPageState();
+}
+
+class _SignInPageState extends State<SignInPage> {
+  // LocalSource _localsource = LocalSource();
   final GlobalKey formKey = GlobalKey<FormState>();
-
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   @override
@@ -97,13 +105,6 @@ class SignInPage extends StatelessWidget {
                       Container(
                         margin: EdgeInsets.only(top: getHeight(20)),
                         child: TextFormField(
-                          validator: (value) {
-                            if (value != name) {
-                              return "Name was writen wrong";
-                            } else {
-                              return null;
-                            }
-                          },
                           controller: nameController,
                           decoration: InputDecoration(
                             filled: true,
@@ -124,13 +125,6 @@ class SignInPage extends StatelessWidget {
                       Container(
                         margin: EdgeInsets.only(top: getHeight(20)),
                         child: TextFormField(
-                          validator: (value) {
-                            if (value != name) {
-                              return "Password was writen wrong";
-                            } else {
-                              return null;
-                            }
-                          },
                           controller: passwordController,
                           decoration: InputDecoration(
                             filled: true,
@@ -149,7 +143,68 @@ class SignInPage extends StatelessWidget {
                         ),
                       ),
                       ElevatedButtonClass(
-                        
+                        nameOfButton: 'Sign in',
+                        ontap: () async {
+                          LogInModel token = await login(
+                              nameController.text, passwordController.text);
+                          String t = token.accessToken ?? '';
+                          String username = token.user!.fName ?? 'ism kelmadi';
+                          String status = token.user!.status.toString();
+                          await GetStorage().write('token', t);
+                          await GetStorage().write('username', username);
+                          await GetStorage().write('status', status);
+                          String asdfg = await GetStorage().read('token');
+                          String st = await GetStorage().read('status');
+                          String name = await GetStorage().read('username');
+                          LocalSource.getInstance().setProfile(
+                            Customer(
+                              refreshToken: token.refreshToken,
+                              accessToken: token.accessToken,
+                              id: token.user!.id.toString(),
+                              name: token.user!.fName,
+                              phone: token.user!.phone,
+                              // createdAt: token.user!.
+                            ),
+                          );
+                          if (token.accessToken!.isNotEmpty) {
+                            debugPrint(
+                                'token localsource dan togri keldi: $asdfg');
+                            debugPrint('Statusni koramiza endi: $st');
+                            debugPrint('name kelishi kerak: $name');
+
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: const Text(
+                                "",
+                                style: TextStyle(color: Colors.red),
+                              ),
+                              duration: const Duration(seconds: 3),
+                              action: SnackBarAction(
+                                label: 'Hush kelibsiz',
+                                onPressed: () {},
+                              ),
+                            ));
+                            Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => HomePage(),
+                                ),
+                                (route) => false);
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: const Text(
+                                "Xato",
+                                style: TextStyle(color: Colors.red),
+                              ),
+                              duration: const Duration(seconds: 3),
+                              action: SnackBarAction(
+                                label: 'email yoki parol xato kiritildi',
+                                onPressed: () {},
+                              ),
+                            ));
+
+                            debugPrint("token xato keldi mana qaren $token ");
+                          }
+                        },
                       ),
                     ],
                   ),

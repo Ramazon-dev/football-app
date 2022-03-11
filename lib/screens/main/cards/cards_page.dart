@@ -3,7 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:softcity/constants/constants.dart';
 import 'package:softcity/constants/sizeconfig.dart';
 import 'package:softcity/providers/provider_swich_listtile.dart';
-import 'package:softcity/widgets/elevated_button.dart';
+import 'package:softcity/screens/main/contacts/contacts_page.dart';
+import 'package:softcity/screens/widgets/elevated_button.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CardsPage extends StatelessWidget {
   const CardsPage({Key? key}) : super(key: key);
@@ -110,7 +112,15 @@ class CardsPage extends StatelessWidget {
                       weightButton: getWidth(308),
                       nameOfButton: "Telegram",
                       marginButton: getHeight(10),
-                      pageCount: 1,
+                      // pageCount: 1,
+                      ontap: () async {
+                        const url = 'https://t.me/softcity_admin/';
+                        if (await canLaunch(url)) {
+                          await launch(url, forceSafariVC: false);
+                        } else {
+                          throw 'Could not launch $url';
+                        }
+                      },
                     ),
                   ],
                 ),
@@ -121,7 +131,7 @@ class CardsPage extends StatelessWidget {
               Container(
                 height: getHeight(335),
                 width: getWidth(335),
-                margin: EdgeInsets.symmetric(horizontal: 20),
+                margin: const EdgeInsets.symmetric(horizontal: 20),
                 decoration: BoxDecoration(
                   boxShadow: [
                     BoxShadow(
@@ -223,7 +233,14 @@ class CardsPage extends StatelessWidget {
                       weightButton: getWidth(308),
                       nameOfButton: "Telegram",
                       marginButton: getHeight(10),
-                      pageCount: 1,
+                      ontap: () async {
+                        const url = 'https://t.me/softcity_admin/';
+                        if (await canLaunch(url)) {
+                          await launch(url, forceSafariVC: false);
+                        } else {
+                          throw 'Could not launch $url';
+                        }
+                      },
                     ),
                   ],
                 ),
