@@ -1,10 +1,9 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class YouTubePlayerWidget extends StatefulWidget {
-  String links;
+  List<String> links;
   YouTubePlayerWidget({required this.links, Key? key}) : super(key: key);
 
   @override
@@ -17,19 +16,25 @@ class _YouTubePlayerWidgetState extends State<YouTubePlayerWidget> {
   late PlayerState _playerState;
   late YoutubeMetaData _videoMetaData;
   bool _isPlayerReady = false;
+  bool? isMute;
 
-  late String _ids;
-  late String link;
-  late List<String> list;
+  List<String> _ids = [];
+  // late String link;
+  // late List<String> list;
   @override
   void initState() {
     super.initState();
-    _ids = widget.links;
-    list = _ids.split('=');
+    // _ids = widget.links;
+
+    // list = _ids.split('=');
+    for (int i = 0; i < widget.links.length; i++) {
+      _ids.add(YoutubePlayer.convertUrlToId(widget.links[i]) ?? '');
+      debugPrint("banner widget ichidamiza ${_ids[i]}");
+    }
     _controller = YoutubePlayerController(
-      initialVideoId: list[1],
-      flags: const YoutubePlayerFlags(
-        mute: true,
+      initialVideoId: _ids.first,
+      flags: YoutubePlayerFlags(
+        mute: isMute ?? true,
         autoPlay: true,
         disableDragSeek: false,
         loop: false,
@@ -87,13 +92,16 @@ class _YouTubePlayerWidgetState extends State<YouTubePlayerWidget> {
             ),
           ),
           IconButton(
-            icon: const Icon(
-              Icons.settings,
+            icon: Icon(
+              isMute == false ? Icons.volume_up : Icons.volume_off,
               color: Colors.white,
               size: 25.0,
             ),
             onPressed: () {
-              log('Settings Tapped!');
+              isMute == true ? isMute = true : false;
+              setState(() {});
+              debugPrint("volume tapped $isMute");
+              // log('Settings Tapped!');
             },
           ),
         ],
@@ -103,7 +111,7 @@ class _YouTubePlayerWidgetState extends State<YouTubePlayerWidget> {
         onEnded: (data) {
           _controller
               .load(_ids[(_ids.indexOf(data.videoId) + 1) % _ids.length]);
-          _showSnackBar('Next Video Started!');
+          // _showSnackBar('Next Video Started!');
         },
       ),
       builder: (context, player) => Scaffold(
@@ -122,24 +130,24 @@ class _YouTubePlayerWidgetState extends State<YouTubePlayerWidget> {
     );
   }
 
-  void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          message,
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-            fontWeight: FontWeight.w300,
-            fontSize: 16.0,
-          ),
-        ),
-        backgroundColor: Colors.blueAccent,
-        behavior: SnackBarBehavior.floating,
-        elevation: 1.0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(50.0),
-        ),
-      ),
-    );
-  }
+  // void _showSnackBar(String message) {
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     SnackBar(
+  //       content: Text(
+  //         message,
+  //         textAlign: TextAlign.center,
+  //         style: const TextStyle(
+  //           fontWeight: FontWeight.w300,
+  //           fontSize: 16.0,
+  //         ),
+  //       ),
+  //       backgroundColor: Colors.blueAccent,
+  //       behavior: SnackBarBehavior.floating,
+  //       elevation: 1.0,
+  //       shape: RoundedRectangleBorder(
+  //         borderRadius: BorderRadius.circular(50.0),
+  //       ),
+  //     ),
+  //   );
+  // }
 }

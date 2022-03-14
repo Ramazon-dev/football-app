@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:provider/provider.dart';
 import 'package:softcity/get_storage/get_storage.dart';
 import 'package:softcity/providers/provider_bottom_nav_bar.dart';
 import 'package:softcity/providers/provider_swich_listtile.dart';
 import 'package:softcity/screens/auth/sign_in_page.dart';
 import 'package:softcity/screens/main/home/home_page.dart';
-import 'package:softcity/service/banner/banner_service.dart';
 import 'package:softcity/theme/dark_theme.dart';
 import 'package:softcity/theme/light_theme.dart';
 

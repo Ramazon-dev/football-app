@@ -25,6 +25,7 @@ class HomeBody extends StatefulWidget {
 
 class _HomeBodyState extends State<HomeBody> {
   String status = GetStorage().read('status') ?? '';
+  List<String>? linklar = [];
 
   @override
   Widget build(BuildContext context) {
@@ -36,15 +37,24 @@ class _HomeBodyState extends State<HomeBody> {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          FutureBuilder<List<BannerGet>>(
+          FutureBuilder<List<String>>(
             future: getBanner(),
-            builder: (context, AsyncSnapshot<List<BannerGet>> snap) {
+            builder: (context, AsyncSnapshot<List<String>> snap) {
               if (snap.hasData) {
-                YoutubePlayerController controller = YoutubePlayerController(
-                  initialVideoId: snap.data![0].link!,
-                  flags: const YoutubePlayerFlags(autoPlay: true, mute: true),
-                );
-                debugPrint("aaaaaaaaaaaaaaaa ${snap.data![0].link}");
+                debugPrint("if ga kirdi ${snap.data}");
+                linklar = snap.data;
+                debugPrint("linklarrrrrrrrrrrr $linklar");
+                // YoutubePlayerController controller = YoutubePlayerController(
+                //   initialVideoId: snap.data![0].link!,
+                //   flags: const YoutubePlayerFlags(
+                //     autoPlay: true,
+                //     mute: false,
+                //   ),
+                // );
+                // for (int i = 0; i < snap.data!.length; i++) {
+                //   debugPrint("aaaaaaaaaaaaaaaa ${snap.data![i].link}");
+                //   linklar.add(snap.data![i].link!);
+                // }
                 return Container(
                   margin: EdgeInsets.only(top: getHeight(20)),
                   height: getHeight(120),
@@ -66,7 +76,7 @@ class _HomeBodyState extends State<HomeBody> {
                             : Colors.white,
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: YouTubePlayerWidget(links: snap.data![1].link!),
+                      child: YouTubePlayerWidget(links: linklar!),
                     ),
                   ),
                 );
