@@ -16,7 +16,7 @@ class _YouTubePlayerWidgetState extends State<YouTubePlayerWidget> {
   late PlayerState _playerState;
   late YoutubeMetaData _videoMetaData;
   bool _isPlayerReady = false;
-  bool? isMute;
+  // bool? isMute;
 
   List<String> _ids = [];
   // late String link;
@@ -33,8 +33,8 @@ class _YouTubePlayerWidgetState extends State<YouTubePlayerWidget> {
     }
     _controller = YoutubePlayerController(
       initialVideoId: _ids.first,
-      flags: YoutubePlayerFlags(
-        mute: isMute ?? true,
+      flags: const YoutubePlayerFlags(
+        mute: false,
         autoPlay: true,
         disableDragSeek: false,
         loop: false,
@@ -91,19 +91,19 @@ class _YouTubePlayerWidgetState extends State<YouTubePlayerWidget> {
               maxLines: 1,
             ),
           ),
-          IconButton(
-            icon: Icon(
-              isMute == false ? Icons.volume_up : Icons.volume_off,
-              color: Colors.white,
-              size: 25.0,
-            ),
-            onPressed: () {
-              isMute == true ? isMute = true : false;
-              setState(() {});
-              debugPrint("volume tapped $isMute");
-              // log('Settings Tapped!');
-            },
-          ),
+          // IconButton(
+          //   icon: Icon(
+          //     Icons.volume_up,
+          //     color: Colors.white,
+          //     size: 25.0,
+          //   ),
+          //   onPressed: () {
+          // isMute == true ? isMute = true : false;
+          // setState(() {});
+          // debugPrint("volume tapped $isMute");
+          // // log('Settings Tapped!');
+          //   },
+          // ),
         ],
         onReady: () {
           _isPlayerReady = true;
