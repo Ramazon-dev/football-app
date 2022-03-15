@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:softcity/constants/sizeconfig.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class YouTubePlayerWidget extends StatefulWidget {
@@ -19,6 +21,9 @@ class _YouTubePlayerWidgetState extends State<YouTubePlayerWidget> {
   // bool? isMute;
 
   List<String> _ids = [];
+  List<String> link = [];
+  String videolink = '';
+  int count = 0;
   // late String link;
   // late List<String> list;
   @override
@@ -29,6 +34,8 @@ class _YouTubePlayerWidgetState extends State<YouTubePlayerWidget> {
     // list = _ids.split('=');
     for (int i = 0; i < widget.links.length; i++) {
       _ids.add(YoutubePlayer.convertUrlToId(widget.links[i]) ?? '');
+      link.add(widget.links[i]);
+      videolink = link[count];
       debugPrint("banner widget ichidamiza ${_ids[i]}");
     }
     _controller = YoutubePlayerController(
@@ -78,49 +85,84 @@ class _YouTubePlayerWidgetState extends State<YouTubePlayerWidget> {
         controller: _controller,
         showVideoProgressIndicator: true,
         progressIndicatorColor: Colors.blueAccent,
-        topActions: <Widget>[
-          const SizedBox(width: 8.0),
-          Expanded(
-            child: Text(
-              _controller.metadata.title,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 18.0,
-              ),
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
+        // topActions: const <Widget>[
+        //   SizedBox(width: 8.0),
+        //   Expanded(
+        //     child: Text(
+        //       '_controller.metadata.title',
+        //       style: TextStyle(
+        //         color: Colors.white,
+        //         fontSize: 18.0,
+        //       ),
+        //       overflow: TextOverflow.ellipsis,
+        //       maxLines: 1,
+        //     ),
+        //   ),
+        // IconButton(
+        //   icon: Icon(
+        //     Icons.volume_up,
+        //     color: Colors.white,
+        //     size: 25.0,
+        //   ),
+        //   onPressed: () {
+        // isMute == true ? isMute = true : false;
+        // setState(() {});
+        // debugPrint("volume tapped $isMute");
+        // // log('Settings Tapped!');
+        //   },
+        // ),
+        // ],
+
+        bottomActions: [
+          SizedBox(
+            width: getWidth(290),
+          ),
+          InkWell(
+            onTap: () async {
+              debugPrint("ontap boldi");
+              String url = videolink;
+              debugPrint("link $url");
+              if (await canLaunch(url)) {
+                debugPrint("ifga kirdi");
+                await launch(url, forceSafariVC: false);
+              } else {
+                debugPrint("else ga kirdi");
+                throw 'Could not launch $url';
+              }
+            },
+            child: const Icon(
+              Icons.fullscreen,
+              color: Colors.white,
             ),
           ),
-          // IconButton(
-          //   icon: Icon(
-          //     Icons.volume_up,
-          //     color: Colors.white,
-          //     size: 25.0,
-          //   ),
-          //   onPressed: () {
-          // isMute == true ? isMute = true : false;
-          // setState(() {});
-          // debugPrint("volume tapped $isMute");
-          // // log('Settings Tapped!');
-          //   },
-          // ),
         ],
         onReady: () {
           _isPlayerReady = true;
         },
         onEnded: (data) {
+          if (link.length == count) {
+            debugPrint(
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaa on ended if ga kirdi $count");
+            count = 0;
+          } else {
+            debugPrint(
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaa on ended esle ga kirdi $count");
+
+            count += 1;
+            videolink = link[count];
+          }
           _controller
               .load(_ids[(_ids.indexOf(data.videoId) + 1) % _ids.length]);
           // _showSnackBar('Next Video Started!');
         },
       ),
       builder: (context, player) => Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            'Youtube Player Flutter',
-            style: TextStyle(color: Colors.white),
-          ),
-        ),
+        // appBar: AppBar(
+        //   title: const Text(
+        //     'Youtube Player Flutter',
+        //     style: TextStyle(color: Colors.white),
+        //   ),
+        // ),
         body: ListView(
           children: [
             player,
